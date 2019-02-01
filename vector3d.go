@@ -37,6 +37,19 @@ func (v Vector3D) Sub(vectors ...Vector3D) Vector3D {
 	return result
 }
 
+type binaryMathOperator func(p float64, q float64) float64
+
+// Apply - Given a function that accepts two floats, this will apply every operation to each number passed in to the vectors
+func (v Vector3D) Apply(fn binaryMathOperator, numbers ...float64) Vector3D {
+	result := Vector3D{v.x, v.y, v.z}
+	for _, n := range numbers {
+		fn(result.x, n)
+		fn(result.y, n)
+		fn(result.z, n)
+	}
+	return result
+}
+
 // Mul returns the vector p*k.
 func (v Vector3D) Mul(k float64) Vector3D {
 	return Vector3D{v.x * k, v.y * k, v.z * k}
@@ -54,12 +67,10 @@ func (v Vector3D) Unit() Vector3D {
 }
 
 // Dot returns the dot product of all the vectors
-func (v Vector3D) Dot(vectors ...Vector3D) Vector3D {
-	result := Vector3D{v.x, v.y, v.z}
+func (v Vector3D) Dot(vectors ...Vector3D) float64 {
+	result := float64(0)
 	for _, vec := range vectors {
-		result.x *= vec.x
-		result.y *= vec.y
-		result.z *= vec.z
+		result += vec.x*v.x + vec.y*v.y + vec.z*v.z
 	}
 	return result
 }
